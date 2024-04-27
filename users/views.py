@@ -18,6 +18,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from AI.TaskEvaluation import TaskEvaluation
+from django.http import JsonResponse
 
 from AI.VoiceToTask import VoiceToTask
 # Create your views here.
@@ -350,46 +351,33 @@ def get_tache_emploie(request):
     serializer = TacheSerializer(taches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-def get_avocat(request):
-    avocats = Avocat.objects.all()
-    avocats_list = []
-    for avocat in avocats:
-        avocat_data = {
-            'user_id':avocat.id,
-            'first_name': avocat.avocat.first_name,
-            'last_name': avocat.avocat.last_name,
-            'email': avocat.avocat.email,
-            'specialty': avocat.specialty,
-            'address': avocat.address,
-            'phone_number': avocat.phone_number,
-            'skills': avocat.skills,
-            'experiences': avocat.experiences,
-            'domaines_pratique': avocat.domaines_pratique,
-            'adresse_cabinet_avocats': avocat.adresse_cabinet_avocats,
-            }
-        avocats_list.append(avocat_data)
-    if request.method == 'GET':
-        return JsonResponse({'avocats': avocats_list})
+
 
 @api_view(['GET'])
 def get_all_employes(request):
+    if request.method == 'GET':
         employes = Employe.objects.all()
         employes_list = []
-        serializer = EmployeSerializer(employes, many=True)
-        for emploie in employes:
+
+        for employe in employes:
             emploie_data = {
-                'emploie_id':emploie.id,
-                'user_id':emploie.user.id,
-                'profile_pic': emploie.user.profile_pic,
-                'username': emploie.user.first_name,
-                'status': emploie.status,
-                'rank':emploie.rank,
-                'email': emploie.user.email,
-                }
-        employes_list.append(emploie_data)
-        if request.method == 'GET':
-            return JsonResponse({'avocats': employes_list})
+                'emploie_id': employe.id,
+                'user_id': employe.user.id,
+                'username': employe.user.first_name,
+                'status': employe.status,
+                'rank': employe.rank,
+                'email': employe.user.email,
+            }
+
+            # Vérifier si l'utilisateur a un profile_pic associé
+            if employe.user.profile_pic:
+                emploie_data['profile_pic'] = employe.user.profile_pic.url
+            else:
+                emploie_data['profile_pic'] = None  # Aucune image de profil
+
+            employes_list.append(emploie_data)
+
+        return JsonResponse({'employes': employes_list})
 
 @api_view(['POST'])
 def add_task_response(request):
