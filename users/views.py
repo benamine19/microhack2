@@ -20,23 +20,23 @@ from django.db.models import Q
 from AI.TaskEvaluation import TaskEvaluation
 
 from AI.VoiceToTask import GetNeededSpecialities, VoiceToTask
-# Create your views here.
 
+# Views.
 
 class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
+    permission_classes = (AllowAny,)
     serializer_class = RegisterSerializerChef
 
-# il faut que l'utilsateur soit le chef pour etre valaible d'ajouter des employer
+###Add An employee by the chef
 @api_view(['POST'])
 def chef_add_employe(request):
     chef_id = request.data.get('chef_id')
     username = request.data.get('username')
-    first_name = request.data.get('first_name')
-    last_name = request.data.get('last_name')
     password = request.data.get('password')
     email = request.data.get('email')
     profile_pic = request.data.get('profile_pic')
@@ -62,28 +62,25 @@ def chef_add_employe(request):
             } ,status=status.HTTP_200_OK)
 
 
-# ajouter une tache par le chef 
+# Add a task by the chef
 @api_view(['POST'])
 def chef_add_tache_form(request):
-    # id = request.data.get('user_id')
-    # user=get_object_or_404(User,id=id)
-    # chef=Chef.objects.filter(user=user)
+    chef_id = request.data.get('chef_id')
     description = request.data.get('description')
+    etat = request.data.get('etat')
     importance = request.data.get('importance')
-    speciality = request.data.get('speciality')
-    
     # Vérifier si tous les champs requis sont présents dans la requête
-    if not (description  and importance):
+    if not (chef_id and description and etat and importance):
         print('da5lt lhadi')
         return Response({"error": "Veuillez fournir chef_id, description, etat et importance."},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Récupérer le chef associé à l'identifiant fourni
+    chef = get_object_or_404(Chef, id=chef_id)
     tache = Tache.objects.create(
-                # chef=chef,
+                chef=chef,
                 description=description,
-                # etat=etat,specialit
-                speciality=speciality,
+                etat=etat,
                 importance=importance
             ) 
     response_data = {
@@ -92,7 +89,7 @@ def chef_add_tache_form(request):
         }
     return Response(response_data, status=status.HTTP_201_CREATED)
 
-# ajouter une tache par le chef
+# add an audio task by the chef and convert it into text AI and Convert it to a task using AI 
 @api_view(['POST'])
 def chef_add_tache_audio(request):
     chef_id = request.data.get('chef_id')
@@ -134,37 +131,7 @@ def chef_add_tache_audio(request):
     return Response(response_data, status=status.HTTP_201_CREATED)
 
 
-
-# # le chef ajouter des emploie pour une tache  
-# @api_view(['POST'])
-# def chef_add_tache(request):
-#     chef_id = request.data.get('chef_id')
-#     employes_id = request.data.get('employes_id', [])
-#     etat = request.data.get('etat')
-#     importance = request.data.get('importance')
-#     # print("etat",etat)
-#     # Vérifier si tous les champs requis sont présents dans la requête
-#     if not (chef_id ):
-#         return Response({"error": "Veuillez fournir chef_id, description, etat et importance."},
-#                         status=status.HTTP_400_BAD_REQUEST)
-#     # Récupérer le chef associé à l'identifiant fourni
-#  chef = get_object_or_404(Chef, id=chef_id)
-#  tache = Tache.objects.create(
-#              chef=chef,
-#              description=description,
-#              etat=etat,
-#              importance=importance
-#          )
-#  response_data = {
-#          'message': 'Tâche créée avec succès.',
-#          'data': TacheSerializer(tache).data
-#      }
-#  return Response(response_data, status=status.HTTP_201_CREATED)
-
-
-
-
-# le chef ajouter des emploie pour une tache  
+#midify task by the manager
 @api_view(['POST'])
 def chef_modifier_tache(request):
     chef_id = request.data.get('chef_id')
@@ -196,26 +163,18 @@ def chef_modifier_tache(request):
 @api_view(['POST'])
 def associate_tasks_to_employes_manually(request):
     employes_id = request.data.get('employes_id', [])
-    print(employes_id)
     tache_id = request.data.get('tache_id')
     # Vérifier si tous les champs requis sont présents dans la requête
     if not (employes_id and tache_id):
-        print('employes_id',employes_id)
-        print('tache_id',tache_id)
-        
         return Response({"error": "Veuillez fournir employes_id et tache_id."},
                         status=status.HTTP_400_BAD_REQUEST)
 
     # Récupérer la tâche associée à l'identifiant fourni
-    print('sinnomm')
-    
     tache = get_object_or_404(Tache, id=tache_id)
-    print('employes_id',employes_id)
 
     # Récupérer la liste des employés associés aux identifiants fournis
     for emp_id in employes_id:
         employe = get_object_or_404(Employe, id=emp_id)
-        
         tache.employes.add(employe)
 
     response_data = {
@@ -224,6 +183,7 @@ def associate_tasks_to_employes_manually(request):
     }
     return Response(response_data, status=status.HTTP_200_OK)
 
+# Associate tasks Automaticaly to employes using AI by estimation the number of workers needed in each field
 @api_view(['POST'])
 def associate_tasks_to_employes_automaticaly(request):
     tache_id = request.data.get('tache_id')
@@ -361,7 +321,7 @@ def chef_supprimer_tache(request):
                 return Response(response_data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def get_all_taches(request):
     taches = Tache.objects.all()
     serializer = TacheSerializer(taches, many=True)
@@ -394,7 +354,6 @@ def add_task_response(request):
         tache_id = request.data.get('tache_id')
         image_file = request.FILES.get('image')
         audio_file = request.FILES.get('audio')
-        employes_id = request.data.get('employes_id', [])
         task = get_object_or_404(Tache, id=tache_id)
         # verifier si l'employe est associé à la tache
         if image_file:
@@ -424,28 +383,6 @@ def add_task_response(request):
     else:
         return Response({"error": "No image"},
                     status=status.HTTP_400_BAD_REQUEST)
-@api_view(['POST'])
 
-def incription(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)  # Convertit le corps de la requête en JSON
 
-        email = data.get('email')
-        password = data.get('password')
 
-        try:
-            user = User.objects.get(email=email)
-            # Vérification du mot de passe
-            if password==user.password:
-                # Mot de passe correct, connexion réussie
-                return JsonResponse({'message': 'Login successful'}, status=200)
-            else:
-                # Mot de passe incorrect
-                return JsonResponse({'error': 'Invalid credentials'}, status=401)
-
-        except User.DoesNotExist:
-            # L'utilisateur n'existe pas
-            return JsonResponse({'error': 'User does not exist'}, status=404)
-
-    else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
