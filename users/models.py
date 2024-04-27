@@ -58,11 +58,11 @@ IMPORTANCE_CHOICES = (
 
 
 class Tache(models.Model):
-    chef = models.ForeignKey(Chef, on_delete=models.CASCADE, related_name='tasks')
+    chef = models.ForeignKey(Chef, on_delete=models.CASCADE, related_name='tasks',null=true)
     employes = models.ManyToManyField(Employe, verbose_name="Employés associés", related_name='tasks')
     description = models.TextField()
     speciality = models.CharField(max_length=50, default='General')
-    etat = models.CharField(max_length=20, choices=ETAT_CHOICES, default='ready')
+    etat = models.CharField(max_length=20, choices=ETAT_CHOICES, default='ready',null=true)
     importance = models.CharField(max_length=20, choices=IMPORTANCE_CHOICES, default='Medium')
     duration = models.CharField(max_length=20, default='00:00:00')
     creationDate = models.DateTimeField(default=datetime.now)
