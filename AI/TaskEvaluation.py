@@ -44,5 +44,3 @@ def TaskEvaluation(task,ImagePath):
         print(json_data)
 
     #return json_data
-
-TaskEvaluation("Build a blue wall","photos\photos\pngtree-exterior-staircase-surrounded-by-a-beautiful-blue-wall-texture-image_13837040.png")
