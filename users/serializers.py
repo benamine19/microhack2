@@ -7,7 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email','role')
+        fields = ('id','first_name','last_name' 'username', 'email','role')
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -54,7 +54,7 @@ class EmployeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employe
         fields = "__all__"
-        
+
 class TacheResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskResponse
