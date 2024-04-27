@@ -386,8 +386,9 @@ def get_all_employes(request):
                 'rank':emploie.rank,
                 'email': emploie.user.email,
                 }
-        avocats_list.append(avocat_data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        employes_list.append(emploie_data)
+        if request.method == 'GET':
+            return JsonResponse({'avocats': employes_list})
 
 @api_view(['POST'])
 def add_task_response(request):
