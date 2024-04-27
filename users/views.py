@@ -351,12 +351,43 @@ def get_tache_emploie(request):
     serializer = TacheSerializer(taches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@api_view(['GET'])
+def get_avocat(request):
+    avocats = Avocat.objects.all()
+    avocats_list = []
+    for avocat in avocats:
+        avocat_data = {
+            'user_id':avocat.id,
+            'first_name': avocat.avocat.first_name,
+            'last_name': avocat.avocat.last_name,
+            'email': avocat.avocat.email,
+            'specialty': avocat.specialty,
+            'address': avocat.address,
+            'phone_number': avocat.phone_number,
+            'skills': avocat.skills,
+            'experiences': avocat.experiences,
+            'domaines_pratique': avocat.domaines_pratique,
+            'adresse_cabinet_avocats': avocat.adresse_cabinet_avocats,
+            }
+        avocats_list.append(avocat_data)
+    if request.method == 'GET':
+        return JsonResponse({'avocats': avocats_list})
 
 @api_view(['GET'])
 def get_all_employes(request):
         employes = Employe.objects.all()
+        employes_list = []
         serializer = EmployeSerializer(employes, many=True)
+        for emploie in employes:
+            emploie_data = {
+                'emploie_id':emploie.id,
+                'profile_pic': emploie.user.profile_pic,
+                'username': emploie.user.first_name,
+                'status': emploie.status,
+                'rank':emploie.rank,
+                'email': emploie.user.email,
+                }
+        avocats_list.append(avocat_data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
