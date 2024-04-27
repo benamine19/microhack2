@@ -18,12 +18,6 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from AI.TaskEvaluation import TaskEvaluation
-<<<<<<< HEAD
-=======
-from django.http import JsonResponse
-from django.contrib.auth import authenticate
-from rest_framework.views import APIView
->>>>>>> 3aba4d2678acf716060677d534a2114a626e40e6
 
 from AI.VoiceToTask import GetNeededSpecialities, VoiceToTask
 # Create your views here.
