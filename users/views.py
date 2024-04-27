@@ -345,7 +345,7 @@ def chef_supprimer_tache(request):
                 return Response(response_data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def get_all_taches(request):
     taches = Tache.objects.all()    
     serializer = TacheSerializer(taches, many=True)
