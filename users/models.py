@@ -33,11 +33,10 @@ class Chef(models.Model):
 
 class Employe(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    speciality = models.CharField(max_length=50,  default='masson')
     status = models.CharField(max_length=50, default='available')
     chef = models.ForeignKey(Chef, on_delete=models.CASCADE )
     rank = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0)
-    specialty = models.CharField(max_length=50, default='General')
+    speciality = models.CharField(max_length=50, default='General')
     def __str__(self):
         return self.user.username
     

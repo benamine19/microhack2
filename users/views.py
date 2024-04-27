@@ -18,7 +18,6 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from AI.TaskEvaluation import TaskEvaluation
-from django.http import JsonResponse
 
 from AI.VoiceToTask import GetNeededSpecialities, VoiceToTask
 # Create your views here.
@@ -90,6 +89,7 @@ def chef_add_tache_form(request):
         }
     return Response(response_data, status=status.HTTP_201_CREATED)
 
+# ajouter une tache par le chef
 @api_view(['POST'])
 def chef_add_tache_audio(request):
     chef_id = request.data.get('chef_id')
@@ -224,11 +224,13 @@ def associate_tasks_to_employes_automaticaly(request):
             taskPlumber = Plumbers[:NeededSpecialities["Plumber"]]
             for plumber in taskPlumber:
                 tache.employes.add(plumber)
-    if(NeededSpecialities["Genral"]):
-        Genrals = Employe.objects.filter(Q(speciality="Genral" )).order_by('rank')
+    if(NeededSpecialities["General"]):
+        Genrals = Employe.objects.filter(Q(speciality="General"))
+        print(Employe.objects.count())
         if(Genrals.exists()):
-            taskGenral = Genrals[:NeededSpecialities["Genral"]]
+            taskGenral = Genrals[:NeededSpecialities["General"]]
             for Genral in taskGenral:
+                print(Genral)
                 tache.employes.add(Genral)
     if(NeededSpecialities["Carpenter"]):
         Carpenters = Employe.objects.filter(Q(speciality="Carpenter" )).order_by('rank')
@@ -245,17 +247,19 @@ def associate_tasks_to_employes_automaticaly(request):
     tache.save()
 
     response_data = {
-        'message': 'Tâche associée aux employés avec succès.',
+        'message': 'Tâche associée automatiquement aux employés avec succès.',
         'data': TacheSerializer(tache).data
     }
     return Response(response_data, status=status.HTTP_200_OK)
 
+# le chef modifie une tâche
 @api_view(['PUT'])
 def chef_modifier_tache(request, tache_id):
         chef_id = request.data.get('chef_id')
         description = request.data.get('description')
         etat = request.data.get('etat')
         importance = request.data.get('importance')
+        
         # Vérifier si tous les champs requis sont présents dans la requête
         if not (chef_id and description and etat and importance):
             return Response({"error": "Veuillez fournir chef_id, description, etat et importance."},
@@ -289,7 +293,7 @@ def chef_modifier_tache(request, tache_id):
 def chef_add_employes_to_tache(request, tache_id):
             chef_id = request.data.get('chef_id')
             employes_id = request.data.get('employes_id', [])
-    
+            
             # Vérifier si tous les champs requis sont présents dans la requête
             if not (chef_id and employes_id):
                 return Response({"error": "Veuillez fournir chef_id et employes_id."},
@@ -348,7 +352,7 @@ def chef_supprimer_tache(request):
 
 @api_view(['POST'])
 def get_all_taches(request):
-    taches = Tache.objects.all()    
+    taches = Tache.objects.all()
     serializer = TacheSerializer(taches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -368,29 +372,9 @@ def get_tache_emploie(request):
 
 @api_view(['GET'])
 def get_all_employes(request):
-    if request.method == 'GET':
         employes = Employe.objects.all()
-        employes_list = []
-        for employe in employes:
-            emploie_data = {
-                'emploie_id': employe.id,
-                'user_id': employe.user.id,
-                'username': employe.user.first_name,
-                'status': employe.status,
-                'rank': employe.rank,
-                'email': employe.user.email,
-                'speciality': employe.speciality,
-                
-            }
-            # Vérifier si l'utilisateur a un profile_pic associé
-            if employe.user.profile_pic:
-                emploie_data['profile_pic'] = employe.user.profile_pic.url
-            else:
-                emploie_data['profile_pic'] = None  # Aucune image de profil
-
-            employes_list.append(emploie_data)
-
-        return JsonResponse({'employes': employes_list})
+        serializer = EmployeSerializer(employes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def add_task_response(request):

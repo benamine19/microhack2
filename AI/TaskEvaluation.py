@@ -34,32 +34,6 @@ def TaskEvaluation(task,ImagePath):
         }
 
         ],
-        },
-                {
-        "role": "user",
-        "content": [
-            {"type": "text", "text": "give me the percentage from 0 to 100 of this task : " + task + " in json for example : {\"percentage\": number}"},
-            {
-                "type": "image_url",
-                "image_url": {
-                "url": f"data:image/jpeg;base64,{base64_image}"
-            }
-        }
-
-        ],
-        },
-        {
-        "role": "user",
-        "content": [
-            {"type": "text", "text": "give me the percentage from 0 to 100 of this task : " + task + " in json for example : {\"percentage\": number}"},
-            {
-                "type": "image_url",
-                "image_url": {
-                "url": f"data:image/jpeg;base64,{base64_image}"
-            }
-        }
-
-        ],
         }
     ],
     max_tokens=300,

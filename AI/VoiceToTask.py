@@ -31,7 +31,6 @@ def VoiceToTask(audio_path):
             {"type": "text", "text": "this is a message from a manager :" + transcription+"  the Criterias are : " + str(Cretarias) + " Return one of the values for each cretarias.devide it and respond in this json format {\"Criteria\": results}"},
         ],
         },
-        
     ]
     )
     json_data = json.loads(response.choices[0].message.content)
@@ -50,7 +49,7 @@ def GetNeededSpecialities(task):
         {
             "role": "user",
             "content": [
-            {"type": "text", "text": "this is a task from a manager :" + task+"  Give me an array of needed specialties with the estimated number of builders from this specialties in json format like this one {\"specialtie\": number} from this array [Plumber,Carpenter,Mason,Genral]"},
+            {"type": "text", "text": "this is a task from a manager :" + task+"  Give me an array of needed specialties with the estimated number of builders from this specialties in json format like this one {\"specialtie\": number} from this array [Plumber,Carpenter,Mason,General]"},
         ],
         },
     ]
@@ -58,5 +57,4 @@ def GetNeededSpecialities(task):
     json_data = json.loads(response.choices[0].message.content)
     print(json_data)
     return json_data    
-
-GetNeededSpecialities("Build a wall with a door and a window in the middle of the wall with a height of 3 meters and a width of 4 meters.")
+GetNeededSpecialities("build a wall of 10 meters")
