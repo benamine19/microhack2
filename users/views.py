@@ -114,8 +114,7 @@ def chef_add_tache_audio(request):
     
     # Récupérer le chef associé à l'identifiant fourni
     chef = get_object_or_404(Chef, id=chef_id)
-
-    #get the list of employes called by the manager      
+      
     
     tache = Tache.objects.create(
                 chef=chef,

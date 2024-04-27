@@ -37,6 +37,7 @@ class Employe(models.Model):
     status = models.CharField(max_length=50, default='available')
     chef = models.ForeignKey(Chef, on_delete=models.CASCADE )
     rank = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0)
+    specialty = models.CharField(max_length=50, default='General')
     def __str__(self):
         return self.user.username
     

@@ -38,5 +38,24 @@ def VoiceToTask(audio_path):
     return json_data
 
 
-fdf = VoiceToTask("Audio/Audio.m4a")
-print(fdf)
+def GetNeededSpecialities(task):
+    load_dotenv()
+    client = OpenAI(api_key=os.environ.get("API_KEY"))
+
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo-0125",
+    response_format={ "type": "json_object" },
+    messages=[
+        {
+            "role": "user",
+            "content": [
+            {"type": "text", "text": "this is a task from a manager :" + task+"  Give me an array of needed specialties with the estimated number of builders from this specialties in json format like this one {\"specialtie\": number} from this array [Plumber,Carpenter,Mason,Genral]"},
+        ],
+        },
+    ]
+    )
+    json_data = json.loads(response.choices[0].message.content)
+    print(json_data)
+    return json_data    
+
+GetNeededSpecialities("Build a wall with a door and a window in the middle of the wall with a height of 3 meters and a width of 4 meters.")
