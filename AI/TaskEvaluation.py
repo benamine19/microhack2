@@ -10,7 +10,9 @@ def encode_image(image_path):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 def TaskEvaluation(task,ImagePath):
-    relativeimagepath = ImagePath[1:]
+    relativeimagepath = ImagePath
+    if ImagePath.startswith("/"):
+        relativeimagepath = ImagePath[1:]
     load_dotenv()
     client = OpenAI(api_key=os.environ.get("API_KEY"))
     # Getting the base64 string
@@ -32,11 +34,41 @@ def TaskEvaluation(task,ImagePath):
         }
 
         ],
+        },
+                {
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "give me the percentage from 0 to 100 of this task : " + task + " in json for example : {\"percentage\": number}"},
+            {
+                "type": "image_url",
+                "image_url": {
+                "url": f"data:image/jpeg;base64,{base64_image}"
+            }
+        }
+
+        ],
+        },
+        {
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "give me the percentage from 0 to 100 of this task : " + task + " in json for example : {\"percentage\": number}"},
+            {
+                "type": "image_url",
+                "image_url": {
+                "url": f"data:image/jpeg;base64,{base64_image}"
+            }
+        }
+
+        ],
         }
     ],
     max_tokens=300,
     )
+    print(response)
+    for i in range(len(response.choices)):
+        json_data = json.loads(response.choices[i].message.content)
+        print(json_data)
 
-    json_data = json.loads(response.choices[0].message.content)
+    #return json_data
 
-    return json_data
+TaskEvaluation("Build a blue wall","photos\photos\pngtree-exterior-staircase-surrounded-by-a-beautiful-blue-wall-texture-image_13837040.png")

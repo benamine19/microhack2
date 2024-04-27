@@ -19,7 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from AI.TaskEvaluation import TaskEvaluation
 
-from AI.VoiceToTask import VoiceToTask
+from AI.VoiceToTask import GetNeededSpecialities, VoiceToTask
 # Create your views here.
 
 
@@ -214,20 +214,34 @@ def associate_tasks_to_employes_manually(request):
 
 @api_view(['POST'])
 def associate_tasks_to_employes_automaticaly(request):
-    employes_id = request.data.get('employes_id', [])
     tache_id = request.data.get('tache_id')
-    # Vérifier si tous les champs requis sont présents dans la requête
-    if not (employes_id and tache_id):
-        return Response({"error": "Veuillez fournir employes_id et tache_id."},
-                        status=status.HTTP_400_BAD_REQUEST)
-
-    # Récupérer la tâche associée à l'identifiant fourni
     tache = get_object_or_404(Tache, id=tache_id)
-
-    # Récupérer la liste des employés associés aux identifiants fournis
-    for emp_id in employes_id:
-        employe = get_object_or_404(Employe, id=emp_id)
-        tache.employes.add(employe)
+    NeededSpecialities = GetNeededSpecialities(tache.description)
+    if(NeededSpecialities["Plumber"]):
+        Plumbers = Employe.objects.filter(Q(speciality="Plumber" )).order_by('rank')
+        if(Plumbers.exists()):
+            taskPlumber = Plumbers[:NeededSpecialities["Plumber"]]
+            for plumber in taskPlumber:
+                tache.employes.add(plumber)
+    if(NeededSpecialities["Genral"]):
+        Genrals = Employe.objects.filter(Q(speciality="Genral" )).order_by('rank')
+        if(Genrals.exists()):
+            taskGenral = Genrals[:NeededSpecialities["Genral"]]
+            for Genral in taskGenral:
+                tache.employes.add(Genral)
+    if(NeededSpecialities["Carpenter"]):
+        Carpenters = Employe.objects.filter(Q(speciality="Carpenter" )).order_by('rank')
+        if(Carpenters.exists()):
+            taskCarpenter = Carpenters[:NeededSpecialities["Carpenter"]]
+            for carpenter in taskCarpenter:
+                tache.employes.add(carpenter)
+    if(NeededSpecialities["Mason"]):
+        Masons = Employe.objects.filter(Q(speciality="Mason" )).order_by('rank')
+        if(Masons.exists()):
+            taskMason = Masons[:NeededSpecialities["Mason"]]
+            for mason in taskMason:
+                tache.employes.add(mason)
+    tache.save()
 
     response_data = {
         'message': 'Tâche associée aux employés avec succès.',

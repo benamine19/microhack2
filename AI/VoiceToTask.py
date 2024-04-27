@@ -31,6 +31,7 @@ def VoiceToTask(audio_path):
             {"type": "text", "text": "this is a message from a manager :" + transcription+"  the Criterias are : " + str(Cretarias) + " Return one of the values for each cretarias.devide it and respond in this json format {\"Criteria\": results}"},
         ],
         },
+        
     ]
     )
     json_data = json.loads(response.choices[0].message.content)
