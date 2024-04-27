@@ -242,7 +242,6 @@ def chef_modifier_tache(request, tache_id):
         description = request.data.get('description')
         etat = request.data.get('etat')
         importance = request.data.get('importance')
-        
         # Vérifier si tous les champs requis sont présents dans la requête
         if not (chef_id and description and etat and importance):
             return Response({"error": "Veuillez fournir chef_id, description, etat et importance."},
@@ -276,7 +275,7 @@ def chef_modifier_tache(request, tache_id):
 def chef_add_employes_to_tache(request, tache_id):
             chef_id = request.data.get('chef_id')
             employes_id = request.data.get('employes_id', [])
-            
+    
             # Vérifier si tous les champs requis sont présents dans la requête
             if not (chef_id and employes_id):
                 return Response({"error": "Veuillez fournir chef_id et employes_id."},
@@ -336,6 +335,23 @@ def chef_supprimer_tache(request):
 @api_view(['POST'])
 def get_all_taches(request):
     taches = Tache.objects.all()
+    for tache in tache:
+        # employe=Emploie
+        employes = tache.employes.all()
+        # tache
+        for employe in employes:
+                    employe.rank += 10
+                    employe.save()
+        tache_data = {
+            'tache_id': tache.id,
+            'chef_id': get_object_or_404(Chef, tache.chef.id).username,
+            'description': tache.description,
+            'etat': tache.etat,
+            'importance': tache.importance,
+            'duration': tache.duration,
+            'creationDate': tache.creationDate,
+        }
+        taches_list.append(tache_data)
     serializer = TacheSerializer(taches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -358,7 +374,6 @@ def get_all_employes(request):
     if request.method == 'GET':
         employes = Employe.objects.all()
         employes_list = []
-
         for employe in employes:
             emploie_data = {
                 'emploie_id': employe.id,
@@ -367,8 +382,9 @@ def get_all_employes(request):
                 'status': employe.status,
                 'rank': employe.rank,
                 'email': employe.user.email,
+                'speciality': employe.speciality,
+                
             }
-
             # Vérifier si l'utilisateur a un profile_pic associé
             if employe.user.profile_pic:
                 emploie_data['profile_pic'] = employe.user.profile_pic.url

@@ -61,6 +61,7 @@ class Tache(models.Model):
     chef = models.ForeignKey(Chef, on_delete=models.CASCADE, related_name='tasks')
     employes = models.ManyToManyField(Employe, verbose_name="Employés associés", related_name='tasks')
     description = models.TextField()
+    speciality = models.CharField(max_length=50, default='General')
     etat = models.CharField(max_length=20, choices=ETAT_CHOICES, default='ready')
     importance = models.CharField(max_length=20, choices=IMPORTANCE_CHOICES, default='Medium')
     duration = models.CharField(max_length=20, default='00:00:00')
