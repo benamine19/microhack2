@@ -334,24 +334,7 @@ def chef_supprimer_tache(request):
 
 @api_view(['POST'])
 def get_all_taches(request):
-    taches = Tache.objects.all()
-    for tache in tache:
-        # employe=Emploie
-        employes = tache.employes.all()
-        # tache
-        for employe in employes:
-                    employe.rank += 10
-                    employe.save()
-        tache_data = {
-            'tache_id': tache.id,
-            'chef_id': get_object_or_404(Chef, tache.chef.id).username,
-            'description': tache.description,
-            'etat': tache.etat,
-            'importance': tache.importance,
-            'duration': tache.duration,
-            'creationDate': tache.creationDate,
-        }
-        taches_list.append(tache_data)
+    taches = Tache.objects.all()    
     serializer = TacheSerializer(taches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
