@@ -380,6 +380,7 @@ def get_all_employes(request):
         for emploie in employes:
             emploie_data = {
                 'emploie_id':emploie.id,
+                'user_id':emploie.user.id,
                 'profile_pic': emploie.user.profile_pic,
                 'username': emploie.user.first_name,
                 'status': emploie.status,
