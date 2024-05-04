@@ -1,8 +1,8 @@
 
-Build Flow Backend
+### Build Flow Backend
 Welcome to Build Flow Backend, a smart task management platform tailored for construction teams. This Django-based backend provides the core functionalities for managing tasks, schedules, and workflows within construction projects.
 
-Features
+### Features
 Task Management: Organize tasks related to construction projects efficiently.
 Workflow Automation: Implement automated workflows to streamline processes.
 User Authentication: Secure user authentication and access control.
@@ -10,7 +10,7 @@ API Endpoints: Expose RESTful APIs for seamless integration with frontend applic
 Setup Instructions
 Follow these steps to set up the Build Flow Backend on your local machine:
 
-Prerequisites
+### Prerequisites
 Python (3.x recommended)
 Pip (Python package installer)
 Virtualenv (recommended for creating isolated Python environments)
