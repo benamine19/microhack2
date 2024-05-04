@@ -19,10 +19,4 @@ Follow these steps to set up the Build Flow Backend on your local machine:
 - Pip (Python package installer)
 - Virtualenv (recommended for creating isolated Python environments)
 
-### Installation
 
-1. **Clone the Repository**
-
-   ```bash
-   git clone <repository_url>
-   cd build-flow-backend
