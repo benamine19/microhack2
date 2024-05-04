@@ -1,17 +1,16 @@
+###Build Flow Backend
+Welcome to the Build Flow Backend, a smart task management platform designed for construction teams, catering to workers in the field such as masons on construction sites. This Django-based backend provides essential functionalities for managing tasks, schedules, and workflows, with specific features tailored for construction workers equipped with camera-enabled helmets for progress tracking.
 
-### Build Flow Backend
-Welcome to Build Flow Backend, a smart task management platform tailored for construction teams. This Django-based backend provides the core functionalities for managing tasks, schedules, and workflows within construction projects.
-
-### Features
-Task Management: Organize tasks related to construction projects efficiently.
+###Features
+Task Management: Efficiently organize tasks related to construction projects.
 Workflow Automation: Implement automated workflows to streamline processes.
 User Authentication: Secure user authentication and access control.
-API Endpoints: Expose RESTful APIs for seamless integration with frontend applications.
-Setup Instructions
+AI-Powered Task Progress Tracking: Utilize AI to assess task progress based on field photos.
+Installation Guide
 Follow these steps to set up the Build Flow Backend on your local machine:
 
-### Prerequisites
-Python (3.x recommended)
+###Prerequisites
+Python (preferably version 3.x)
 Pip (Python package installer)
 Virtualenv (recommended for creating isolated Python environments)
 Installation
@@ -20,11 +19,11 @@ bash
 Copy code
 git clone <repository_url>
 cd build-flow-backend
-Create Virtual Environment
+Create a Virtual Environment
 bash
 Copy code
 virtualenv venv
-source venv/bin/activate  # Activate virtual environment
+source venv/bin/activate  # Activate the virtual environment
 Install Dependencies
 bash
 Copy code
@@ -43,19 +42,9 @@ The backend server will start running at http://localhost:8000.
 API Documentation
 The Build Flow Backend exposes the following APIs:
 
-Task Endpoints:
-GET /api/tasks/: Get all tasks.
-POST /api/tasks/: Create a new task.
-GET /api/tasks/<task_id>/: Get details of a specific task.
-PUT /api/tasks/<task_id>/: Update details of a task.
-DELETE /api/tasks/<task_id>/: Delete a task.
-User Authentication:
-POST /api/auth/login/: User login.
-POST /api/auth/logout/: User logout.
-POST /api/auth/register/: User registration.
-Refer to the API documentation for more details on request and response formats.
 
-Contributing
+
+Contribution
 We welcome contributions to the Build Flow Backend! Here's how you can contribute:
 
 Fork the repository.
